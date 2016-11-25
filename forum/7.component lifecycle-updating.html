@@ -1,0 +1,95 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>组件的生命周期-特殊的两个</title>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script src="bower_components/react/react.js"></script>
+    <script src="bower_components/react/JSXTransformer.js"></script>
+	<script type="text/jsx">
+        var MessageBox= React.createClass({
+            //第二步
+            getInitialState:function(){
+                return {
+                    count:0
+                }
+            }/*,
+            //第一步
+            getDefaultProps:function(){
+
+            },
+            //第三步
+            componentWillMount:function(){
+
+            },
+            //第五步：渲染完成后执行，可以获取dom和进行ajax操作
+            componentDidMount:function(){
+
+            },
+            //第六步：删除前
+            componentWillUnmount:function(){
+
+            }*/, shouldComponentUpdate: function (nextProp, nextState) {
+                console.log('shouldComponentUpdate');
+
+                //true是可以更新,false不可以
+                if(nextState.count>6) return false;
+                return true;
+
+            }, componentWillUpdate: function (nextProp, nextState) {
+                console.log('componentWillUpdate');
+
+            },componentDidUpdate:function(){
+                console.log('componentDidUpdate');
+
+            },
+            doUpdate:function(){
+                this.setState({
+                    count:this.state.count+1
+                })
+            },
+            handleRemove:function(){
+                React.unmountComponentAtNode(document.getElementById('app'));
+            },
+            //第四步
+            render:function(){
+                console.log('渲染');
+                return (
+                    <div>
+                        <h1>{"coming home "+this.state.count}</h1>
+                        <Submessage count={this.state.count}/>
+                        <button onClick={this.handleRemove}>remove component</button>
+                        <button onClick={this.doUpdate}>update</button>
+                    </div>
+                )
+            }
+        });
+        var Submessage=React.createClass({
+            //在组件接收到新的 props 的时候调用;在初始化渲染的时候，该方法不会调用。
+            //在将要接受新的props时被调用，不是说props是不可变状态吗？情况通常是这样的，当一个父组件包含了一个子组件，子组件的一个props的值是父组件的states的值，那么当父组件可变状态改变时，子组件的props也更新了，于是调用了这个函数。
+            componentWillReceiveProps:function(nextProp){
+                console.log('子组件将要获得新的prop');
+            },
+            //更新前根据该函数的返回值(blooen)决定是否进行这次更新;该方法在初始化渲染的时候不会调用，在使用 forceUpdate 方法的时候也不会。
+            shouldComponentUpdate:function(nextProp ,nextState){
+                if(nextProp.count>3) return false;
+                return true;
+            },
+            render:function(){
+                return (
+                    <h3>{"子组件 "+this.props.count}</h3>
+                )
+            }
+        });
+        React.render(
+                <MessageBox/>,
+                document.getElementById('app')
+        )
+	</script>
+
+</body>
+
+</html>

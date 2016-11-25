@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app"></div>
+<!--包含了一些插件的reactjs-->
+<script src="bower_components/react/react-with-addons.js"></script>
+<script src="bower_components/react/JSXTransformer.js"></script>
+<script type="text/jsx">
+    var WithLink =React.createClass({
+        //通过mixins来引入你想用的插件,是一个数组(想用Link方法必须先引入插件)
+        //linkedstateMixin插件可以返回一个link对象一直可以传到子组件
+        mixins:[ React.addons.LinkedStateMixin ],
+        getInitialState:function(){
+            return {
+                message:'react in good',
+                isReactAwesome:true
+            }
+        },
+        render:function(){
+//            通过设置valueLink绑定名为message的state
+//            通过设置checkedLink绑定名为isReactAwesome的state
+            return (
+                <div>
+                    <h1>我想说:{this.state.message}</h1>
+                    <h1>React是不是很好用?{this.state.isReactAwesome?"非常好用":"不好用"}</h1>
+                    <input type="text" valueLink={this.linkState('message')}/>
+                    <input type="checkbox" checkedLink={this.linkState('isReactAwesome')}/>
+                    <SonComp messageLink={ this.linkState('message')} likeLink={this.linkState('isReactAwesome')}/>
+                </div>
+            )
+        }
+    });
+    //react也支持扩展运算符(...),继承父级的props,类似ES6
+    var SonComp=React.createClass({
+        render:function(){
+            return (
+                <div>
+                    <p>这是个子组件哦</p>
+                  <SonSonComp {...this.props}/>
+                </div>
+            )
+        }
+    });
+
+    var SonSonComp=React.createClass({
+        render:function(){
+            return (
+                <div>
+                    <p>子子组件</p>
+                    <input type="text" valueLink={this.props.messageLink}/>
+                    <input type="checkbox" checkedLink={this.props.likeLink}/>
+                </div>
+            )
+        }
+    });
+
+    React.render(<WithLink/>,document.getElementById('app'));
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,152 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>refs指向</title>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script src="bower_components/react/react.js"></script>
+    <script src="bower_components/react/JSXTransformer.js"></script>
+	<script type="text/jsx">
+		var FormApp = React.createClass({
+			getInitialState:function(){
+				return {
+					inputValue: 'input value',
+					selectValue: 'A',
+					radioValue:'B',
+					checkValues:[],
+					textareaValue:'some text here,,,,,'				
+				}
+			},
+			handleSubmit:function(e){
+				e.preventDefault();
+				var formData = {
+					/**
+					 *如果想获取原生对象
+					 * 方法一：this.refs["..."].getDOMNode()
+					 * 方法二：React.findDOMNode(this.refs["..."]);
+					 * */
+					input: this.refs.goodInput.getDOMNode().value,
+					select: this.refs.goodSelect.getDOMNode().value,
+					textarea: this.refs.goodTextarea.getDOMNode().value,
+
+					//radio和check用refs获取result不方便,不知道定义多少个refs
+					radio: this.state.radioValue,
+					check: this.state.checkValues
+				}
+
+				console.log('the form result is:');
+				console.log(formData);
+
+				//调用子组件的函数通过refs，refs返回的是react组件对象
+				//个人理解：this.refs就相当于getElementsByClass（）
+				this.refs.goodRadio.saySomething();
+				//this.refs["goodRadio"].saySomething();
+
+			},
+			handleInput:function(e){
+				this.setState({
+					inputValue: e.target.inputValue
+				})
+			},
+			handleRadio:function(e){
+				this.setState({
+					radioValue: e.target.value
+				})
+			},
+			handleSelect:function(e){
+				this.setState({
+					selectValue:e.target.value
+				})
+			},
+			//复选框的多选状态
+			handleCheck:function(e){
+				var checkValues = this.state.checkValues.slice();
+				var newVal = e.target.value;
+				var index = checkValues.indexOf(newVal);
+				if( index == -1 ){
+					checkValues.push( newVal )
+				}else{
+					checkValues.splice(index,1);
+				}
+
+				this.setState({
+					checkValues: checkValues
+				})
+			},
+			render: function(){
+				return (
+					<form onSubmit={this.handleSubmit}>
+						//ref里面也可以放函数,如下:comp就是components,也就是当前这个组件,当渲染的时候自动获取焦点
+						<br/>
+						<input ref={function(comp){React.findDOMNode(comp).focus()}} type="text" value="test"/>
+						<br/>
+						<input ref="goodInput" type="text" onChange={this.handleInput} value={this.state.inputValue }/>
+						<br/>
+						选项：
+						<select value={ this.state.selectValue } ref="goodSelect" onChange={this.handleSelect}>
+							<option value="A">A</option>
+							<option value="B">B</option>
+							<option value="C">C</option>
+							<option value="D">D</option>
+							<option value="E">E</option>
+						</select>
+						<br/>
+						<p>radio button!</p>
+						<RadioButtons ref="goodRadio" handleRadio={this.handleRadio} />
+						<br/>
+						
+						<Checkboxes handleCheck={this.handleCheck} />
+						<br/>
+						<textarea defaultValue={this.state.textareaValue} ref="goodTextarea"></textarea>
+						<button type="submit">提交</button>
+					</form>
+				)
+			}
+		});
+		
+		var RadioButtons = React.createClass({
+			saySomething:function(){
+				alert("yo what's up man!");
+			},
+			render:function(){
+				return (
+					<span>
+						A
+						<input onChange={this.props.handleRadio} name="goodRadio" type="radio" value="A"/>
+						B
+						<input onChange={this.props.handleRadio} name="goodRadio" type="radio" defaultChecked value="B"/>
+						C
+						<input onChange={this.props.handleRadio} name="goodRadio" type="radio" value="C"/>
+					</span>
+				)
+			}
+		});
+
+		var Checkboxes = React.createClass({
+			render: function(){
+				return (
+					<span>
+						A
+						<input onChange={this.props.handleCheck}  name="goodCheckbox" type="checkbox" value="A"/>
+						B
+						<input onChange={this.props.handleCheck} name="goodCheckbox" type="checkbox" value="B" />
+						C
+						<input onChange={this.props.handleCheck} name="goodCheckbox" type="checkbox" value="C" />
+					</span>
+				)
+			}
+		})
+
+		var formApp = React.render(
+			<FormApp />,
+			document.getElementById('app')
+		)
+
+	</script>
+
+</body>
+
+</html>

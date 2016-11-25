@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>事件2</title>
+</head>
+<body>
+<div id="app"></div>
+<script src="../bower_components/react/react.js"></script>
+<script src="../bower_components/react/JSXTransformer.js"></script>
+<script type="text/jsx">
+    var FormApp=React.createClass({
+        getInitialState:function(){
+            return {
+                inputValue:'input value',
+                selectValue:'A',
+                radioValue:'B',
+                textareaValue:'some text here ...'
+            }
+        },
+        handleSumbit:function(e){
+            e.preventDefault();
+            console.log(e);
+            console.log(e.target);
+        },
+        render:function (){
+            //1.注意标签闭合，否则会报错
+            //2.注意给表单元素加默认初始值的时候要用default。。。，否则设置的初始值是不能改变的
+            //3.如果用value的话，就要给对应的元素绑定对应的改变事件，比如：onChange
+            return (
+                <form onSubmit={this.handleSubmit}>
+                    <input type="text" value={this.state.inputValue} />
+                    <br/>
+                    <select name="select" id="oS" value={this.state.selectValue}>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                    </select>
+                    <br/>
+                    <p>radio!!!</p>
+                    <input name="testRadio" type="radio"/>
+                    <input name="testRadio" type="radio" defaultChecked />
+                    <input name="testRadio" type="radio"/>
+                    <p>checkbox!!!</p>
+                    <input name="testCheckbox" type="checkbox" />
+                    <input name="testCheckbox" type="checkbox" defaultChecked/>
+                    <input name="testCheckbox" type="checkbox" />
+                    <br/>
+                    <textarea name="testT" id="testT" cols="30" rows="10" value={this.state.textareaValue}></textarea>
+                    <br/>
+                    <button type="submit">提交</button>
+                </form>
+            )
+        }
+
+    });
+
+    var ClickComponent = React.render(
+            <FormApp/>,
+            document.getElementById('app')
+    );
+</script>
+</body>
+</html>

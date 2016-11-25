@@ -1,0 +1,79 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>组件的生命周期初始化渲染</title>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script src="bower_components/react/react.js"></script>
+    <script src="bower_components/react/JSXTransformer.js"></script>
+	<script type="text/jsx">
+        var MessageBox= React.createClass({
+            //第二步
+            getInitialState:function(){
+                console.log('getInitialState');
+                return {
+                    count:0
+                }
+            },
+            //第一步
+            getDefaultProps:function(){
+                console.log('getDefaultProps');
+                return {}
+            },
+            //第三步
+            componentWillMount:function(){
+                console.log('componentWillMount');
+
+                //这里可以加上一些事件监听或者定时器,但是要注意在componentWillUnmount的时候清除定时器,以免造成内存泄漏
+                var that=this;
+                this.timer=setInterval(function(){
+                    that.setState({
+                        count:that.state.count+1
+                    });
+                },1000);
+            },
+            //第五步：渲染完成后执行，可以获取dom和进行ajax操作
+            componentDidMount:function(){
+                console.log('componentDidMount');
+                console.log(this.getDOMNode());
+            },
+            //第六步：删除前
+            componentWillUnmount:function(){
+                alert('are you sure to remove?');
+                //清除定时器
+                clearInterval(this.timer);
+            },
+            handleRemove:function(){
+                React.unmountComponentAtNode(document.getElementById('app'));
+            },
+            //第四步
+            render:function(){
+                console.log('渲染');
+                return (
+                    <div>
+                        <h1>{"coming home "+this.state.count}</h1>
+                        <Submessage/>
+                        <button onClick={this.handleRemove}>remove component</button>
+                    </div>
+                )
+            }
+        });
+        var Submessage=React.createClass({
+            render:function(){
+                return (
+                    <h3>我等你</h3>
+                )
+            }
+        });
+        React.render(
+                <MessageBox/>,
+                document.getElementById('app')
+        )
+	</script>
+
+</body>
+
+</html>
