@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello React</title>
+
+    <style>
+        .css{
+            color:red;
+        }
+    </style>
+    <script src="../build/react.js"></script>
+    <script src="../build/JSXTransformer.js"></script>
+</head>
+<body>
+<div id="example"></div>
+<script type="text/jsx">
+
+    var HelloWorld = React.createClass({
+        render: function () {
+
+            //样式对象
+            var styleObj={
+                color:'blue'
+            }
+
+            /*class要用className表示*/
+            /*一个{}表示的是执行js表达式,行间样式style要用样式对象{}表示,key值用驼峰命名法*/
+            return (
+                    <p>
+                        Hello,<input type="text" className="css" style={{color:'blue'}} placeholder="Your name here"/>!
+                        It is {this.props.date.toTimeString()}
+                    </p>
+            );
+        }
+    });
+
+    //调用
+    setInterval(function () {
+        React.render(
+            <HelloWorld date={new Date()}/>,
+            document.getElementById('example')
+        );
+    }, 500);
+</script>
+</body>
+</html>
